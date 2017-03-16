@@ -1,3 +1,4 @@
+import common.SentenceUtils;
 import edu.stanford.nlp.coref.CorefCoreAnnotations;
 import edu.stanford.nlp.coref.data.CorefChain;
 import edu.stanford.nlp.ie.AbstractSequenceClassifier;
@@ -8,14 +9,11 @@ import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.semgraph.SemanticGraph;
 import edu.stanford.nlp.semgraph.SemanticGraphCoreAnnotations;
-import edu.stanford.nlp.sequences.DocumentReaderAndWriter;
 import edu.stanford.nlp.trees.Tree;
 import edu.stanford.nlp.trees.TreeCoreAnnotations;
 import edu.stanford.nlp.util.CoreMap;
 import edu.stanford.nlp.util.PropertiesUtils;
 import edu.stanford.nlp.util.Triple;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.io.IOException;
 import java.util.List;
@@ -30,79 +28,84 @@ import static org.eclipse.jetty.webapp.Origin.Annotation;
 
 public class Application {
     public static void main(String[] args) throws IOException, ClassNotFoundException {
-//        SpringApplication.run(Application.class, args);
+//      SpringApplication.run(Application.class, args);
 
-//        and coreference resolution
-//        Properties props = new Properties();
-//        props.setProperty("annotators", "tokenize, ssplit, pos, lemma, ner, parse, dcoref");
+//      and coreference resolution
+//      Properties props = new Properties();
+//      props.setProperty("annotators", "tokenize, ssplit, pos, lemma, ner, parse, dcoref");
 
-//        String text = "This is an awesome library by Stanford folks";
-//        String text = "On Sunday, 2015 the fate of Lehman Brothers which is in New York and has 3% of 234 billion dollars in assets, the beleaguered investment bank, hung in the balance on Sunday as Federal Reserve officials and the leaders of major financial institutions continued to gather in emergency meetings trying to complete a plan to rescue the stricken bank.  Several possible plans emerged from the talks, held at the Federal Reserve Bank of New York and led by Timothy R. Geithner, the president with two friends of the New York Fed, and Treasury Secretary Henry M. Paulson Jr.";
-//        String text = "There are many apples.";
-//        String text ="Barack Obama was born on August 4, 1961 in Honolulu, Hawaii which was 4 days\n" + "ago.";
-        String text = "What country borders the most others? How many apple do you have?";
-//          String text = "What is line 245?";
+//      String text = "This is an awesome library by Stanford folks";
+//      String text = "On Sunday, 2015 the fate of Lehman Brothers which is in New York and has 3% of 234 billion dollars in assets, the beleaguered investment bank, hung in the balance on Sunday as Federal Reserve officials and the leaders of major financial institutions continued to gather in emergency meetings trying to complete a plan to rescue the stricken bank.  Several possible plans emerged from the talks, held at the Federal Reserve Bank of New York and led by Timothy R. Geithner, the president with two friends of the New York Fed, and Treasury Secretary Henry M. Paulson Jr.";
+//      String text = "There are many apples.";
+//      String text ="Barack Obama was born on August 4, 1961 in Honolulu, Hawaii which was 4 days\n" + "ago.";
+//      String text ="How much did you pay";
+//      String text = "What country borders the most others? How many apple do you have?";
+//      String text = "What to do when in diet";
+//        String text = "What is line 245 and how to pay for it";
+        String text = "What should I do if I can't find what I want to sell in the Amazon catalog";
+//        sentenceWorks(text);
 
-        sentenceWorks(text);
-//        nERWorks(text);
+        SentenceUtils.getInstance().printStopwords();
+//      nERWorks(text);
     }
 
     public static void sentenceWorks(String text){
-        Properties props = PropertiesUtils.asProperties(
-        "annotators", "tokenize,ssplit,pos,lemma,ner,parse,natlog",
-        "ssplit.isOneSentence", "false",
-//        "ner.model", "edu/stanford/nlp/models/ner/english.all.3class.distsim.crf.ser.gz",
-//        "ner.model", "edu/stanford/nlp/models/ner/english.conll.4class.distsim.crf.ser.gz",
-        "ner.model", "edu/stanford/nlp/models/ner/english.muc.7class.distsim.crf.ser.gz",
-        "tokenize.language", "en");
-
-        StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
-
-        // create an empty Annotation just with the given text
-        Annotation document = new Annotation(text);
-
-        // run all Annotators on this text
-        pipeline.annotate(document);
-
-        List<CoreMap> sentences = document.get(CoreAnnotations.SentencesAnnotation.class);
-
-        for(CoreMap sentence: sentences) {
-            // traversing the words in the current sentence
-            // a CoreLabel is a CoreMap with additional token-specific methods
-            for (CoreLabel token: sentence.get(CoreAnnotations.TokensAnnotation.class)) {
-                // this is the text of the token
-                String word = token.get(CoreAnnotations.TextAnnotation.class);
-                // this is the POS tag of the token
-                String pos = token.get(CoreAnnotations.PartOfSpeechAnnotation.class);
-
-                String lemma = token.get(CoreAnnotations.LemmaAnnotation.class);
-                // this is the NER label of the token
-                String ne = token.get(CoreAnnotations.NamedEntityTagAnnotation.class);
-
-                System.out.printf("Token: %s,lemma: %s ,pos: %s, ne: %s\n", word, lemma, pos, ne);
-            }
-
-            // this is the parse tree of the current sentence
-            Tree tree = sentence.get(TreeCoreAnnotations.TreeAnnotation.class);
-
-            System.out.println("Parse tree: "+tree.toString());
-//            System.out.println("Parse tree root: "+tree.value());
-//            System.out.println("Parse tree root: "+tree.nodeString());
-//            System.out.println("Parse tree root: "+tree.pennString());
-//            System.out.println("Parse tree root: "+tree.pennString());
-
-            // this is the Stanford dependency graph of the current sentence
-            SemanticGraph dependencies = sentence.get(SemanticGraphCoreAnnotations.CollapsedCCProcessedDependenciesAnnotation.class);
-
-//            System.out.println("dependency graph: "+dependencies.toString());
-        }
-
-// This is the coreference link graph
-// Each chain stores a set of mentions that link to each other,
-// along with a method for getting the most representative mention
-// Both sentence and token offsets start at 1!
-        Map<Integer, CorefChain> graph =
-        document.get(CorefCoreAnnotations.CorefChainAnnotation.class);
+//        Properties props = PropertiesUtils.asProperties(
+//        "annotators", "tokenize,ssplit,pos,lemma,ner,parse,natlog, stopword",
+//        "ssplit.isOneSentence", "false",
+////        "ner.model", "edu/stanford/nlp/models/ner/english.all.3class.distsim.crf.ser.gz",
+////        "ner.model", "edu/stanford/nlp/models/ner/english.conll.4class.distsim.crf.ser.gz",
+//        "ner.model", "edu/stanford/nlp/models/ner/english.muc.7class.distsim.crf.ser.gz",
+//        "tokenize.language", "en");
+//
+//        StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
+//
+//        // create an empty Annotation just with the given text
+//        Annotation document = new Annotation(text);
+//
+//        // run all Annotators on this text
+//        pipeline.annotate(document);
+//
+//        List<CoreMap> sentences = document.get(CoreAnnotations.SentencesAnnotation.class);
+//
+//        for(CoreMap sentence: sentences) {
+//            // traversing the words in the current sentence
+//            // a CoreLabel is a CoreMap with additional token-specific methods
+//            for (CoreLabel token: sentence.get(CoreAnnotations.TokensAnnotation.class)) {
+//                // this is the text of the token
+//                String word = token.get(CoreAnnotations.TextAnnotation.class);
+//                // this is the POS tag of the token
+//                String pos = token.get(CoreAnnotations.PartOfSpeechAnnotation.class);
+//
+//                String lemma = token.get(CoreAnnotations.LemmaAnnotation.class);
+//                // this is the NER label of the token
+//                String ne = token.get(CoreAnnotations.NamedEntityTagAnnotation.class);
+//
+//                System.out.printf("Token: %s,lemma: %s ,pos: %s, ne: %s\n", word, lemma, pos, ne);
+//            }
+//
+//            // this is the parse tree of the current sentence
+//            Tree tree = sentence.get(TreeCoreAnnotations.TreeAnnotation.class);
+//
+//            System.out.println("Parse tree: "+tree.toString());
+////            System.out.println("Parse tree root: "+tree.isPhrasal());
+////            System.out.println("Parse tree root: "+tree.isPreTerminal());
+//////            System.out.println("Parse tree root: "+tree.nodeString());
+//////            System.out.println("Parse tree root: "+tree.pennString());
+//////            System.out.println("Parse tree root: "+tree.pennString());
+////
+////            // this is the Stanford dependency graph of the current sentence
+////            SemanticGraph dependencies = sentence.get(SemanticGraphCoreAnnotations.CollapsedCCProcessedDependenciesAnnotation.class);
+//
+////            System.out.println("dependency graph: "+dependencies.toString());
+//        }
+//
+//// This is the coreference link graph
+//// Each chain stores a set of mentions that link to each other,
+//// along with a method for getting the most representative mention
+//// Both sentence and token offsets start at 1!
+//        Map<Integer, CorefChain> graph =
+//        document.get(CorefCoreAnnotations.CorefChainAnnotation.class);
 
 //        System.out.println("dependency graph: "+graph.toString());
     }
