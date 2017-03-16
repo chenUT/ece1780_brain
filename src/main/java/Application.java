@@ -40,7 +40,7 @@ public class Application {
 //        String text = "On Sunday, 2015 the fate of Lehman Brothers which is in New York and has 3% of 234 billion dollars in assets, the beleaguered investment bank, hung in the balance on Sunday as Federal Reserve officials and the leaders of major financial institutions continued to gather in emergency meetings trying to complete a plan to rescue the stricken bank.  Several possible plans emerged from the talks, held at the Federal Reserve Bank of New York and led by Timothy R. Geithner, the president with two friends of the New York Fed, and Treasury Secretary Henry M. Paulson Jr.";
 //        String text = "There are many apples.";
 //        String text ="Barack Obama was born on August 4, 1961 in Honolulu, Hawaii which was 4 days\n" + "ago.";
-        String text = "What country borders the most others? How many apple do you have?";
+        String text = "What country borders the most others? How many apple do you have? Today is 07/03/2017. Date is 2017-03-07. Date: 2017-03-07";
 //          String text = "What is line 245?";
 
         sentenceWorks(text);
