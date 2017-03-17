@@ -5,8 +5,15 @@ import edu.stanford.nlp.ie.crf.CRFClassifier;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.util.Triple;
+import org.deeplearning4j.models.word2vec.Word2Vec;
+import org.deeplearning4j.text.sentenceiterator.BasicLineIterator;
+import org.deeplearning4j.text.sentenceiterator.SentenceIterator;
+import org.deeplearning4j.text.tokenization.tokenizer.preprocessor.CommonPreprocessor;
+import org.deeplearning4j.text.tokenization.tokenizerfactory.DefaultTokenizerFactory;
+import org.deeplearning4j.text.tokenization.tokenizerfactory.TokenizerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
 import java.util.List;
@@ -15,13 +22,32 @@ import java.util.List;
  * Created by chen on 3/8/17.
  */
 
-@SpringBootApplication
+//@SpringBootApplication
 public class Application {
 
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
 
-      SpringApplication.run(Application.class, args);
+        String filePath = new ClassPathResource("raw_sentences.txt").getFile().getAbsolutePath();
+
+        SentenceIterator iter = new BasicLineIterator(filePath);
+        TokenizerFactory t = new DefaultTokenizerFactory();
+        t.setTokenPreProcessor(new CommonPreprocessor());
+        Word2Vec vec = new Word2Vec.Builder()
+            .minWordFrequency(5)
+            .iterations(1)
+            .layerSize(100)
+            .seed(42)
+            .windowSize(5)
+            .iterate(iter)
+            .tokenizerFactory(t)
+            .build();
+
+        vec.fit();
+        double cosSim = vec.similarity("day", "night");
+        System.out.println(cosSim);
+
+//      SpringApplication.run(Application.class, args);
 
 //      and coreference resolution
 //      Properties props = new Properties();
