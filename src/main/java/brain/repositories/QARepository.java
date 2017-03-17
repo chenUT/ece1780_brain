@@ -1,6 +1,6 @@
-package repositories;
+package brain.repositories;
 
-import models.QuestionAnswer;
+import brain.models.QuestionAnswer;
 
 import java.util.List;
 

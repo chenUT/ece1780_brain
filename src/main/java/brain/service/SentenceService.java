@@ -1,13 +1,15 @@
-package service;
+package brain.service;
 
+import brain.common.WordUtils;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
-import edu.stanford.nlp.trees.Tree;
-import edu.stanford.nlp.trees.TreeCoreAnnotations;
 import edu.stanford.nlp.util.CoreMap;
 import edu.stanford.nlp.util.PropertiesUtils;
+import brain.models.Question;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -16,33 +18,38 @@ import java.util.*;
  * Created by yws894 on 3/11/17.
  */
 @Service
-public class SentenceProcess {
-
+public class SentenceService {
    StanfordCoreNLP pipeline;
 
-   public SentenceProcess(){
+   @Autowired
+    ResourceLoader resourceLoader;
+
+   // singleton initializer
+   public SentenceService(){
        Properties props = PropertiesUtils.asProperties(
                "annotators", "tokenize,ssplit,pos,lemma,ner,parse,natlog",
                "ssplit.isOneSentence", "false",
-//        "ner.model", "edu/stanford/nlp/models/ner/english.all.3class.distsim.crf.ser.gz",
-//        "ner.model", "edu/stanford/nlp/models/ner/english.conll.4class.distsim.crf.ser.gz",
-               "ner.model", "edu/stanford/nlp/models/ner/english.muc.7class.distsim.crf.ser.gz",
+        "ner.model", "edu/stanford/nlp/models/ner/english.all.3class.distsim.crf.ser.gz", // simplest ner model
+//        "ner.model", "edu/stanford/nlp/brain.models/ner/english.conll.4class.distsim.crf.ser.gz",
+//               "ner.model", "edu/stanford/nlp/brain.models/ner/english.muc.7class.distsim.crf.ser.gz",
                "tokenize.language", "en");
 
        pipeline = new StanfordCoreNLP(props);
 
    }
 
-   public List<String> getNouns(String text){
-        create an empty Annotation just with the given text
+   public Question processQuestion(String text){
+//        create an empty Annotation just with the given text
        Annotation document = new Annotation(text);
+       WordUtils wordUtils = WordUtils.getInstance(resourceLoader);
 
        // run all Annotators on this text
        pipeline.annotate(document);
 
        List<CoreMap> sentences = document.get(CoreAnnotations.SentencesAnnotation.class);
 
-       Map<String, String> wordToLemma = new HashMap<>();
+       Question resultQuestion = new Question();
+       resultQuestion.setText(text);
 
        for(CoreMap sentence: sentences) {
            // traversing the words in the current sentence
@@ -57,15 +64,24 @@ public class SentenceProcess {
                // this is the NER label of the token
                String ne = token.get(CoreAnnotations.NamedEntityTagAnnotation.class);
 
-//             System.out.printf("Token: %s,lemma: %s ,pos: %s, ne: %s\n", word, lemma, pos, ne);
+               // noun and the lemma is not a stop word
+               if (!wordUtils.isStopword(lemma)){
+                   if (wordUtils.isNoun(pos)){
+                       resultQuestion.addNouns(lemma);
+                   } else if (wordUtils.isVerb(lemma)){
+                       resultQuestion.addVerb(lemma);
+                   }
+                   //add this word to the words list
+                   resultQuestion.addWord(word);
+               }
+//               System.out.printf("Token: %s,lemma: %s ,pos: %s, ne: %s\n", word, lemma, pos, ne);
            }
 
-           // this is the parse tree of the current sentence
-           Tree tree = sentence.get(TreeCoreAnnotations.TreeAnnotation.class);
-           
+           // TODO parse tree to get sentence type
+//           Tree tree = sentence.get(TreeCoreAnnotations.TreeAnnotation.class);
        }
 
-       return new ArrayList<>();
+       return resultQuestion;
    }
 
 

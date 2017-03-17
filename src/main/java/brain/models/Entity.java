@@ -1,4 +1,4 @@
-package models;
+package brain.models;
 
 /**
  * Created by yws894 on 3/10/17.

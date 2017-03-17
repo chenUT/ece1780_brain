@@ -1,8 +1,8 @@
-package repositories.impl;
+package brain.repositories.impl;
 
-import models.QuestionAnswer;
+import brain.models.QuestionAnswer;
 import org.apache.commons.lang3.StringUtils;
-import repositories.QARepository;
+import brain.repositories.QARepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,18 +27,19 @@ public class QARepositoryMapImpl implements QARepository{
 
     @Override
     public QuestionAnswer insertQuestionAnswer(String userId, QuestionAnswer questionAnswer) {
-        if(StringUtils.isBlank(userId)) {
-            return null;
+        String tempUser = userId;
+        if(StringUtils.isBlank(tempUser)) {
+            tempUser = "_ANONYMOUS_";
         }
-        String newId =  qaMap.getOrDefault(userId, new ArrayList<>()).size() + "";
+        String newId =  qaMap.getOrDefault(tempUser, new ArrayList<>()).size() + "";
         questionAnswer.setId(newId);
 
-        if (qaMap.containsKey(userId)) {
-            qaMap.get(userId).add(questionAnswer);
+        if (qaMap.containsKey(tempUser)) {
+            qaMap.get(tempUser).add(questionAnswer);
         } else {
            List<QuestionAnswer> qaList = new ArrayList<>();
            qaList.add(questionAnswer);
-           qaMap.put(userId, qaList);
+           qaMap.put(tempUser, qaList);
         }
         return questionAnswer;
     }

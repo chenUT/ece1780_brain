@@ -1,35 +1,27 @@
-import common.SentenceUtils;
-import edu.stanford.nlp.coref.CorefCoreAnnotations;
-import edu.stanford.nlp.coref.data.CorefChain;
+package brain;
+
 import edu.stanford.nlp.ie.AbstractSequenceClassifier;
 import edu.stanford.nlp.ie.crf.CRFClassifier;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
-import edu.stanford.nlp.pipeline.Annotation;
-import edu.stanford.nlp.pipeline.StanfordCoreNLP;
-import edu.stanford.nlp.semgraph.SemanticGraph;
-import edu.stanford.nlp.semgraph.SemanticGraphCoreAnnotations;
-import edu.stanford.nlp.trees.Tree;
-import edu.stanford.nlp.trees.TreeCoreAnnotations;
-import edu.stanford.nlp.util.CoreMap;
-import edu.stanford.nlp.util.PropertiesUtils;
 import edu.stanford.nlp.util.Triple;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
-import static org.eclipse.jetty.webapp.Origin.Annotation;
 
 /**
  * Created by chen on 3/8/17.
  */
 
+@SpringBootApplication
 public class Application {
+
+
     public static void main(String[] args) throws IOException, ClassNotFoundException {
 
-//      SpringApplication.run(Application.class, args);
+      SpringApplication.run(Application.class, args);
 
 //      and coreference resolution
 //      Properties props = new Properties();
@@ -43,20 +35,46 @@ public class Application {
 //      String text = "What country borders the most others? How many apple do you have?";
 //      String text = "What to do when in diet";
 //        String text = "What is line 245 and how to pay for it";
-        String text = "What should I do if I can't find what I want to sell in the Amazon catalog";
-//        sentenceWorks(text);
+//        String text = "What should I do if I can't find what I want to sell in the Amazon catalog?";
+////        sentenceWorks(text);
+//        SentenceService sentenceService = new SentenceService();
+//        ScoreService scoreService = new ScoreService();
+////        Question question = sentenceService.processQuestion(text);
+//
+////        List<QAText> qaTexts = initQAList();
+//
+//        QARepository qaRepository = new QARepositoryMapImpl();
+//
+//        List<QuestionAnswer> tempQAs = qaRepository.loadQuestionAnswers("UoT");
+//
+//        String questionText = "What is the application fee?";
+//        Question askQuestion = sentenceService.processQuestion(questionText);
+//
+//        System.out.println("----");
+//
+//        askQuestion.getNouns().forEach(System.out::println);
+//
+//        System.out.println("----");
+//
+//        List<AnswerWithScore> scoredList = tempQAs.stream().map(tempQA -> scoreService.getAnswerWithScore(tempQA, askQuestion)).collect(Collectors.toList());
+//
+//        scoredList.sort((o1, o2) -> o2.getScore() - o1.getScore());
+//
+//        scoredList.forEach(System.out::println);
 
-        SentenceUtils.getInstance().printStopwords();
+//        nouns.stream().forEach(System.out::println);
+
 //      nERWorks(text);
     }
 
+
     public static void sentenceWorks(String text){
 //        Properties props = PropertiesUtils.asProperties(
-//        "annotators", "tokenize,ssplit,pos,lemma,ner,parse,natlog, stopword",
+//        "annotators", "tokenize,ssplit,pos,lemma,ner,parse,natlog",
 //        "ssplit.isOneSentence", "false",
-////        "ner.model", "edu/stanford/nlp/models/ner/english.all.3class.distsim.crf.ser.gz",
-////        "ner.model", "edu/stanford/nlp/models/ner/english.conll.4class.distsim.crf.ser.gz",
-//        "ner.model", "edu/stanford/nlp/models/ner/english.muc.7class.distsim.crf.ser.gz",
+////        "ner.model", "edu/stanford/nlp/brain.models/ner/english.all.3class.distsim.crf.ser.gz",
+////        "ner.model", "edu/stanford/nlp/brain.models/ner/english.conll.4class.distsim.crf.ser.gz",
+//        "ner.model", "edu/stanford/nlp/brain.models/ner/english.muc.7class.distsim.crf.ser.gz",
 //        "tokenize.language", "en");
 //
 //        StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
@@ -90,26 +108,25 @@ public class Application {
 //
 //            System.out.println("Parse tree: "+tree.toString());
 ////            System.out.println("Parse tree root: "+tree.isPhrasal());
-////            System.out.println("Parse tree root: "+tree.isPreTerminal());
-//////            System.out.println("Parse tree root: "+tree.nodeString());
-//////            System.out.println("Parse tree root: "+tree.pennString());
-//////            System.out.println("Parse tree root: "+tree.pennString());
-////
-////            // this is the Stanford dependency graph of the current sentence
-////            SemanticGraph dependencies = sentence.get(SemanticGraphCoreAnnotations.CollapsedCCProcessedDependenciesAnnotation.class);
+//            System.out.println("Parse tree root: "+tree.isPreTerminal());
+////            System.out.println("Parse tree root: "+tree.nodeString());
+////            System.out.println("Parse tree root: "+tree.pennString());
+////            System.out.println("Parse tree root: "+tree.pennString());
 //
-////            System.out.println("dependency graph: "+dependencies.toString());
-//        }
-//
-//// This is the coreference link graph
-//// Each chain stores a set of mentions that link to each other,
-//// along with a method for getting the most representative mention
-//// Both sentence and token offsets start at 1!
-//        Map<Integer, CorefChain> graph =
-//        document.get(CorefCoreAnnotations.CorefChainAnnotation.class);
+//            // this is the Stanford dependency graph of the current sentence
+//            SemanticGraph dependencies = sentence.get(SemanticGraphCoreAnnotations.CollapsedCCProcessedDependenciesAnnotation.class);
+
+//            System.out.println("dependency graph: "+dependencies.toString());
+        }
+
+// This is the coreference link graph
+// Each chain stores a set of mentions that link to each other,
+// along with a method for getting the most representative mention
+// Both sentence and token offsets start at 1!
+//        Map<Integer, CorefChain> graph = document.get(CorefCoreAnnotations.CorefChainAnnotation.class);
 
 //        System.out.println("dependency graph: "+graph.toString());
-    }
+//    }
 
     public static void nERWorks(String text) throws IOException, ClassNotFoundException {
 
