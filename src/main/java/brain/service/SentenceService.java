@@ -22,7 +22,7 @@ public class SentenceService {
    StanfordCoreNLP pipeline;
 
    @Autowired
-    ResourceLoader resourceLoader;
+   ResourceLoader resourceLoader;
 
    // singleton initializer
    public SentenceService(){

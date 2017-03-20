@@ -1,11 +1,19 @@
 package brain.models;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Created by chen on 3/16/17.
  */
 public class QAText {
+    @JsonProperty
     private String question;
+
+    @JsonProperty
     private String answer;
+
+    public QAText(){}
 
     public QAText(String question, String answer) {
 //        String utf8 = ("UTF-8");

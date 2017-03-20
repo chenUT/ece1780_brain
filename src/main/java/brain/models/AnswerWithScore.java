@@ -7,14 +7,14 @@ public class AnswerWithScore {
 
     private String knownQuestion;
     private String answer;
-    private int score;
+    private double score;
 
     public AnswerWithScore(String answer) {
         this.answer = answer;
         this.score = 0;
     }
 
-    public void addScore(int addScore){
+    public void addScore(double addScore){
        this.score = this.score + addScore;
     }
 
@@ -26,7 +26,7 @@ public class AnswerWithScore {
         this.answer = answer;
     }
 
-    public int getScore() {
+    public double getScore() {
         return score;
     }
 
@@ -40,6 +40,6 @@ public class AnswerWithScore {
 
     @Override
     public String toString() {
-        return "Score: "+this.getScore()+"; Answer: "+this.getAnswer()+"\n";
+        return "Score: "+this.getScore()+"; Answer: "+this.getAnswer()+"\n; Question: "+this.getKnownQuestion();
     }
 }
