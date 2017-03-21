@@ -14,6 +14,7 @@ import java.io.IOException;
  */
 public class AuthFilter implements Filter{
 
+    // Simple token authentication for system
     private static final String MY_TOKEN = "super_secure_token_IaqqmVVNrX2R7zm_IDcgzQPPrgcoFrcKF25l";
 
     @Override

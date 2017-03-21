@@ -16,8 +16,7 @@ import java.util.List;
  */
 @Service
 public class ScoreService {
-    private static final int NOUN_MATCH_SCORE = 1;
-    private static final int VERB_SCORE = 5;
+    private static final double NOUN_MATCH_SCORE = 1;
 
     private static final Object LOCK = new Object();
 
@@ -53,9 +52,7 @@ public class ScoreService {
         queryNouns.forEach(qn -> {
            DoubleWrapper maxSim = new DoubleWrapper(-1);
            knownNouns.forEach(kn -> {
-              System.out.println("Comparing: "+qn+" with "+kn);
               double tmpSim = word2VecService.getWord2Vec().similarity(qn, kn);
-               System.out.println("Comparing Result: "+tmpSim);
               if (tmpSim > maxSim.value) {
                   maxSim.setValue(tmpSim);
               }
@@ -64,26 +61,12 @@ public class ScoreService {
         });
 
         // if we only have one noun in query, we bump up the weight for this noun
-
         if (knownNouns.size() == 0 && queryNouns.size() == 0) {
             totalScore.addScore(2.0);
         }
         else if (knownNouns.size() == 0) {
             totalScore.addScore(1.0);
         }
-
-        // check the rest of the nouns
-
-        // check verb
-//        query.getVerbs().forEach(v -> {
-//            if (knownQA.getQuestion().getVerbs().contains(v)){
-//                synchronized (LOCK) {
-//                    totalScore.addScore(VERB_SCORE);
-//                }
-//            }
-//        });
-
-        System.out.println(totalScore.toString());
 
         return totalScore;
     }
