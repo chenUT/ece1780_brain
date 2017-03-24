@@ -3,6 +3,10 @@ package brain.rest;
 import brain.models.*;
 import brain.service.QATextService;
 import brain.service.Word2VecService;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -35,22 +39,19 @@ public class QAController {
     @Autowired
     QARepository qaRepository;
 
-    @RequestMapping("/")
-    public String index() {
-        return "Greetings from Spring Boot!";
-    }
-
-    @RequestMapping(name = "/qa", method = RequestMethod.POST)
+    @RequestMapping(value = "/qa", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
     public void loadQA(@RequestBody QAList qaList, @RequestParam(name = "category", defaultValue = "UoT") String category){
         if (qaList == null || qaList.getQaList() == null || qaList.getQaList().size() == 0) {
             throw new IllegalArgumentException("qas can not be empty");
         }
 
+        // add new qaText to existing raw storage
         qaList.getQaList().forEach(qaText -> {
             qaTextService.addQAText(qaText);
         });
 
+        // process new qaText and store in processed qaRepo
         qaList.getQaList().forEach(qaText -> {
             QuestionAnswer qa = new QuestionAnswer();
             Question q = sentenceService.processQuestion(qaText.getQuestion());
@@ -69,10 +70,10 @@ public class QAController {
         System.out.println("done");
     }
 
-    @RequestMapping(name = "/qa", method = RequestMethod.GET)
-    public AnswerWithScore getAnswer(@RequestParam(name = "question")String question){
+    @RequestMapping(value = "/qa", method = RequestMethod.GET)
+    public AnswerWithScore getAnswer(@RequestParam(name = "question")String question, @RequestParam(value = "category", defaultValue="UoT") String category){
         Question askQuestion = sentenceService.processQuestion(question);
-        List<QuestionAnswer> tempQAs = qaRepository.loadQuestionAnswers("UoT");
+        List<QuestionAnswer> tempQAs = qaRepository.loadQuestionAnswers(category);
         List<AnswerWithScore> scoredList = tempQAs.stream().map(tempQA -> scoreService.getAnswerWithScore(tempQA, askQuestion)).collect(Collectors.toList());
 
         scoredList.sort((o1, o2) -> {
@@ -86,5 +87,17 @@ public class QAController {
         }
 
         return scoredList.get(0);
+    }
+
+
+    @RequestMapping(value = "/categories", method = RequestMethod.GET)
+    @ResponseBody
+    public JsonNode getCategories(){
+        ObjectNode objectNode = JsonNodeFactory.instance.objectNode();
+
+        ArrayNode arrayNode = JsonNodeFactory.instance.arrayNode();
+        qaRepository.getCategoryList().forEach(category -> arrayNode.add(category));
+
+        return objectNode.set("categories", arrayNode);
     }
 }

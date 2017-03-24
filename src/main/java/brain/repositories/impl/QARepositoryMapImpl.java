@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import brain.repositories.QARepository;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,17 +18,17 @@ public class QARepositoryMapImpl implements QARepository{
     private final static Map<String, List<QuestionAnswer>> qaMap = new ConcurrentHashMap();
 
     @Override
-    public List<QuestionAnswer> loadQuestionAnswers(String userId) {
-        if(StringUtils.isBlank(userId)) {
+    public List<QuestionAnswer> loadQuestionAnswers(String category) {
+        if(StringUtils.isBlank(category)) {
             return null;
         }
 
-        return qaMap.getOrDefault(userId, new ArrayList<>());
+        return qaMap.getOrDefault(category, new ArrayList<>());
     }
 
     @Override
-    public QuestionAnswer insertQuestionAnswer(String userId, QuestionAnswer questionAnswer) {
-        String tempUser = userId;
+    public QuestionAnswer insertQuestionAnswer(String category, QuestionAnswer questionAnswer) {
+        String tempUser = category;
         if(StringUtils.isBlank(tempUser)) {
             tempUser = "_ANONYMOUS_";
         }
@@ -42,5 +43,10 @@ public class QARepositoryMapImpl implements QARepository{
            qaMap.put(tempUser, qaList);
         }
         return questionAnswer;
+    }
+
+    @Override
+    public List<String> getCategoryList(){
+        return new ArrayList(qaMap.keySet());
     }
 }
