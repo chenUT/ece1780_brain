@@ -47,9 +47,17 @@ public class Word2VecService {
         TokenizerFactory t = new DefaultTokenizerFactory();
         t.setTokenPreProcessor(new CommonPreprocessor());
 
+        int freq = 1;
+        freq = fullText.length()/15000;
+        if (freq == 0) {
+            freq = 1;
+        }
+        System.out.println("Text length: "+fullText.length());
+        System.out.println("freq : "+freq);
+
         // train the word to vev model with default sentences
         Word2Vec vec = new Word2Vec.Builder()
-            .minWordFrequency(1)
+            .minWordFrequency(freq)
             .iterations(1)
             .layerSize(40)
             .seed(42)
