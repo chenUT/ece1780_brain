@@ -25,6 +25,10 @@ public class ScoreService {
 
     // TODO improve this algo
     public AnswerWithScore getAnswerWithScore(QuestionAnswer knownQA, Question query) {
+//        knownQA.getQuestion().getNouns().forEach(System.out::println);
+//        System.out.println("--verb--");
+//        knownQA.getQuestion().getVerbs().forEach(System.out::println);
+
         AnswerWithScore totalScore = new AnswerWithScore(knownQA.getAnswerText());
         totalScore.setKnownQuestion(knownQA.getQuestion().getText());
 
@@ -60,6 +64,14 @@ public class ScoreService {
            totalScore.addScore(maxSim.value);
         });
 
+        query.getVerbs().forEach(v -> {
+            if (knownQA.getQuestion().getVerbs().contains(v)){
+                synchronized (LOCK) {
+                    totalScore.addScore(0.5);
+               }
+            }
+        });
+
         // if we only have one noun in query, we bump up the weight for this noun
         if (knownNouns.size() == 0 && queryNouns.size() == 0) {
             totalScore.addScore(5.0);
@@ -70,6 +82,8 @@ public class ScoreService {
                 totalScore.addScore(1.0);
             }
         }
+
+//        System.out.println(totalScore);
 
         return totalScore;
     }

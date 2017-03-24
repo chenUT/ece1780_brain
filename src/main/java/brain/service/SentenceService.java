@@ -22,7 +22,7 @@ public class SentenceService {
    StanfordCoreNLP pipeline;
 
    @Autowired
-   ResourceLoader resourceLoader;
+    ResourceLoader resourceLoader;
 
    // singleton initializer
    public SentenceService(){
@@ -67,9 +67,9 @@ public class SentenceService {
                // noun and the lemma is not a stop word
                if (!wordUtils.isStopword(lemma)){
                    if (wordUtils.isNoun(pos)){
-                       resultQuestion.addNouns(lemma);
-                   } else if (wordUtils.isVerb(lemma)){
-                       resultQuestion.addVerb(lemma);
+                       resultQuestion.addNouns(lemma.toLowerCase());
+                   } else if (wordUtils.isVerb(pos)){
+                       resultQuestion.addVerb(lemma.toLowerCase());
                    }
                    //add this word to the words list
                    resultQuestion.addWord(word);

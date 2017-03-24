@@ -40,6 +40,6 @@ public class AnswerWithScore {
 
     @Override
     public String toString() {
-        return "Score: "+this.getScore()+"; Answer: "+this.getAnswer()+"\n; Question: "+this.getKnownQuestion();
+        return "Score: "+this.getScore()+"; Answer: "+this.getAnswer()+"; Question: "+this.getKnownQuestion();
     }
 }
