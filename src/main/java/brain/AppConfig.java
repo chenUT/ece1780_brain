@@ -68,7 +68,7 @@ public class AppConfig {
             Question q = sentenceService.processQuestion(qaText.getQuestion());
             qa.setQuestion(q);
             qa.setAnswerText(qaText.getAnswer());
-            qaRepository.insertQuestionAnswer("UoT", qa);
+            qaRepository.insertQuestionAnswer("UoT Grad School", qa);
         });
         return qaRepository;
     }

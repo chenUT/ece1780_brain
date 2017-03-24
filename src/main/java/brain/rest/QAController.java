@@ -41,7 +41,7 @@ public class QAController {
 
     @RequestMapping(value = "/qa", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public void loadQA(@RequestBody QAList qaList, @RequestParam(name = "category", defaultValue = "UoT") String category){
+    public void loadQA(@RequestBody QAList qaList, @RequestParam(name = "category", defaultValue = "UoT Grad School") String category){
         if (qaList == null || qaList.getQaList() == null || qaList.getQaList().size() == 0) {
             throw new IllegalArgumentException("qas can not be empty");
         }
@@ -71,7 +71,7 @@ public class QAController {
     }
 
     @RequestMapping(value = "/qa", method = RequestMethod.GET)
-    public AnswerWithScore getAnswer(@RequestParam(name = "question")String question, @RequestParam(value = "category", defaultValue="UoT") String category){
+    public AnswerWithScore getAnswer(@RequestParam(name = "question")String question, @RequestParam(value = "category", defaultValue= "UoT Grad School") String category){
         Question askQuestion = sentenceService.processQuestion(question);
         List<QuestionAnswer> tempQAs = qaRepository.loadQuestionAnswers(category);
         List<AnswerWithScore> scoredList = tempQAs.stream().map(tempQA -> scoreService.getAnswerWithScore(tempQA, askQuestion)).collect(Collectors.toList());
