@@ -27,6 +27,10 @@ repositories {
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.4.4'
+}
+
 dependencies {
     // tag::jetty[]
     compile("org.springframework.boot:spring-boot-starter-web") {
