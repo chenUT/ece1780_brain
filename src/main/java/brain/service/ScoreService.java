@@ -62,10 +62,13 @@ public class ScoreService {
 
         // if we only have one noun in query, we bump up the weight for this noun
         if (knownNouns.size() == 0 && queryNouns.size() == 0) {
-            totalScore.addScore(2.0);
-        }
-        else if (knownNouns.size() == 0) {
-            totalScore.addScore(1.0);
+            totalScore.addScore(5.0);
+        } else if (queryNouns.size() == 0) {
+            totalScore.addScore(2.5);
+        } else {
+            if (knownNouns.size() == 0) {
+                totalScore.addScore(1.0);
+            }
         }
 
         return totalScore;
